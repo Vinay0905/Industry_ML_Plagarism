@@ -1,0 +1,94 @@
+# ==================================================
+# Python bytecode & caches
+# ==================================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ==================================================
+# Virtual environments
+# ==================================================
+.env
+.venv
+venv/
+ENV/
+env/
+ML_plag_env/
+# ==================================================
+# Jupyter Notebook artifacts
+# ==================================================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# ==================================================
+# OS / Editor junk
+# ==================================================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ==================================================
+# Logs & runtime files
+# ==================================================
+*.log
+logs/
+tmp/
+temp/
+
+# ==================================================
+# Data files (do NOT commit raw student data)
+# ==================================================
+data/raw/*
+data/processed/*
+data/results/*
+
+# Keep folder structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/results/.gitkeep
+
+# ==================================================
+# Model & ML artifacts
+# ==================================================
+models/
+checkpoints/
+*.pt
+*.pth
+*.bin
+*.onnx
+
+# HuggingFace / Transformers cache
+.cache/
+hf_cache/
+transformers_cache/
+
+# ==================================================
+# Test & coverage artifacts
+# ==================================================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==================================================
+# Build / distribution
+# ==================================================
+build/
+dist/
+*.egg-info/
+
+# ==================================================
+# Environment & secrets
+# ==================================================
+.env.*
+*.env
+secrets.yaml
+secrets.json
+
+# ==================================================
+# Misc
+# ==================================================
+*.bak
+*.tmp
