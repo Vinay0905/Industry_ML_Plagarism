@@ -16,7 +16,7 @@ This system prioritizes fairness and accuracy:
 ### Three-Signal Detection System
 
 1. **Lexical Similarity** (15% weight) - Fast text-based comparison
-2. **Structural Similarity** (45% weight) - AST and RK-GST analysis
+2. **Structural Similarity** (45% weight) - Tree-sitter AST + RK-GST analysis
 3. **Semantic Similarity** (40% weight) - ML-based algorithmic intent
 
 ### Severity Classification
@@ -168,25 +168,33 @@ Edit `src/config/weights.py` to fine-tune:
 - Feature weights for each signal
 - Semantic model selection
 
-## 🔬 Structural Similarity: AST vs RK-GST
+## 🔬 Structural Similarity: Multi-Method Approach
 
-The system supports **two structural similarity approaches**:
+The system supports **three structural similarity methods**:
 
-### AST-based Analysis
+### Tree-Sitter AST (Default ⭐ Recommended)
 
-- **Best for**: Detecting algorithmic plagiarism
-- **Strength**: Semantic understanding, robust to refactoring
-- **Use when**: Code has been heavily modified
+- **Best for**: Multi-language plagiarism detection
+- **Strength**: Robust error handling, works for Python/Java/C++/C
+- **Use when**: You have submissions in multiple languages or student code with errors
+
+### Python AST Analysis
+
+- **Best for**: Deep Python-specific analysis
+- **Strength**: Control-flow and data-flow analysis
+- **Use when**: All submissions are in Python and you need deep inspection
 
 ### RK-GST (Rabin-Karp Greedy String Tiling)
 
 - **Best for**: Copy-paste detection with reordering
 - **Strength**: Fast, industry-proven (MOSS, JPlag)
-- **Use when**: You need fast screening
+- **Use when**: You need quick screening of many submissions
 
-### Hybrid Mode (Recommended)
+### Hybrid Mode
 
-Combines both approaches for robust detection. See `notebooks/03_ast_similarity.ipynb` for side-by-side comparison.
+Combines all three approaches: Tree-Sitter (40%) + AST (30%) + RK-GST (30%) for maximum accuracy.
+
+See `examples/compare_structural_methods.py` for side-by-side comparison.
 
 ## 📋 Input Format
 

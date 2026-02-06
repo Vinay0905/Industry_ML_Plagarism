@@ -6,12 +6,14 @@ from src.similarity.structural import (
     ASTSimilarityAnalyzer,
     RKGSTSimilarityAnalyzer
 )
+from src.similarity.treesitter_structural import TreeSitterStructuralAnalyzer
 from src.similarity.semantic import SemanticSimilarity
 
 __all__ = [
     'LexicalSimilarity',
-    'StructuralSimilarity',
+    'StructuralSimilarity', 
     'ASTSimilarityAnalyzer',
     'RKGSTSimilarityAnalyzer',
+    'TreeSitterStructuralAnalyzer',
     'SemanticSimilarity'
 ]

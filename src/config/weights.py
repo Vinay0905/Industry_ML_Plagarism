@@ -11,21 +11,23 @@ from enum import Enum
 
 class StructuralMethod(Enum):
     """Available structural similarity methods"""
-    AST = "ast"          # Abstract Syntax Tree analysis
-    RKGST = "rkgst"      # Rabin-Karp Greedy String Tiling
-    HYBRID = "hybrid"    # Combination of both
+    TREESITTER = "treesitter"  # Tree-sitter AST (multi-language, robust) - RECOMMENDED
+    AST = "ast"                # Python AST only (deep analysis)
+    RKGST = "rkgst"            # Rabin-Karp Greedy String Tiling
+    HYBRID = "hybrid"          # Combination of methods
 
-# Default method (recommended: HYBRID for best results)
-DEFAULT_STRUCTURAL_METHOD = StructuralMethod.HYBRID
+# Default method (recommended: TREESITTER for multi-language + robustness)
+DEFAULT_STRUCTURAL_METHOD = StructuralMethod.TREESITTER
 
 # ============================================================================
 # HYBRID MODE WEIGHTS
 # ============================================================================
 
-# When using HYBRID mode, combine AST and RK-GST with these weights
+# When using HYBRID mode, combine Tree-Sitter, AST, and RK-GST with these weights
 HYBRID_WEIGHTS = {
-    'ast': 0.6,      # AST gets 60% weight (better for algorithmic similarity)
-    'rkgst': 0.4     # RK-GST gets 40% weight (better for copy-paste detection)
+    'treesitter': 0.4,  # Tree-sitter gets 40% weight (multi-language, robust)
+    'ast': 0.3,         # AST gets 30% weight (Python-specific deep analysis)
+    'rkgst': 0.3        # RK-GST gets 30% weight (copy-paste detection)
 }
 
 assert abs(sum(HYBRID_WEIGHTS.values()) - 1.0) < 0.01, "Hybrid weights must sum to 1.0"

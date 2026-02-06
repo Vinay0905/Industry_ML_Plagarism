@@ -1,7 +1,8 @@
 """
-Structural similarity analyzer with dual implementation:
-1. AST-based (tree edit distance)
-2. RK-GST (Rabin-Karp Greedy String Tiling)
+Structural similarity analyzer with multiple implementations:
+1. Tree-sitter AST (multi-language, robust) - RECOMMENDED
+2. Python AST-based (deep Python analysis)
+3. RK-GST (Rabin-Karp Greedy String Tiling - fast copy-paste detection)
 
 This is a STRONG signal for plagiarism detection.
 """
@@ -359,7 +360,7 @@ class RKGSTSimilarityAnalyzer:
 
 class StructuralSimilarity:
     """
-    Unified structural similarity interface supporting both AST and RK-GST.
+    Unified structural similarity interface supporting Tree-Sitter, AST, and RK-GST.
     """
     
     def __init__(self, method: StructuralMethod = None):
@@ -367,18 +368,25 @@ class StructuralSimilarity:
         Initialize structural similarity analyzer.
         
         Args:
-            method: Method to use (AST, RKGST, or HYBRID)
+            method: Method to use (TREESITTER, AST, RKGST, or HYBRID)
         """
         from src.config.weights import DEFAULT_STRUCTURAL_METHOD
+        from src.similarity.treesitter_structural import TreeSitterStructuralAnalyzer
         
         self.method = method or DEFAULT_STRUCTURAL_METHOD
+        self.treesitter_analyzer = TreeSitterStructuralAnalyzer()
         self.ast_analyzer = ASTSimilarityAnalyzer()
         self.rkgst_analyzer = RKGSTSimilarityAnalyzer()
         self.logger = logging.getLogger(self.__class__.__name__)
     
-    def compute_similarity(self, code1: str, code2: str) -> dict:
+    def compute_similarity(self, code1: str, code2: str, language: str = 'python') -> dict:
         """
         Compute structural similarity using configured method.
+        
+        Args:
+            code1: First code snippet
+            code2: Second code snippet
+            language: Programming language (for tree-sitter)
         
         Returns:
             {
@@ -387,7 +395,15 @@ class StructuralSimilarity:
                 'breakdown': dict (if hybrid)
             }
         """
-        if self.method == StructuralMethod.AST:
+        if self.method == StructuralMethod.TREESITTER:
+            score = self.treesitter_analyzer.compute_similarity(code1, code2, language)
+            return {
+                'score': score,
+                'method': 'treesitter',
+                'breakdown': None
+            }
+        
+        elif self.method == StructuralMethod.AST:
             score = self.ast_analyzer.compute_similarity(code1, code2)
             return {
                 'score': score,
@@ -403,20 +419,23 @@ class StructuralSimilarity:
                 'breakdown': None
             }
         
-        else:  # HYBRID
+        else:  # HYBRID - combine all three
+            ts_score = self.treesitter_analyzer.compute_similarity(code1, code2, language)
             ast_score = self.ast_analyzer.compute_similarity(code1, code2)
             rkgst_score = self.rkgst_analyzer.compute_similarity(code1, code2)
             
             # Weighted average
             final_score = (
-                ast_score * HYBRID_WEIGHTS['ast'] + 
-                rkgst_score * HYBRID_WEIGHTS['rkgst']
+                ts_score * HYBRID_WEIGHTS.get('treesitter', 0.4) + 
+                ast_score * HYBRID_WEIGHTS.get('ast', 0.3) + 
+                rkgst_score * HYBRID_WEIGHTS.get('rkgst', 0.3)
             )
             
             return {
                 'score': final_score,
                 'method': 'hybrid',
                 'breakdown': {
+                    'treesitter': ts_score,
                     'ast': ast_score,
                     'rkgst': rkgst_score
                 }
