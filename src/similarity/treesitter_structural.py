@@ -58,6 +58,7 @@ class TreeSitterStructuralAnalyzer:
         if lang not in self._language_cache:
             try:
                 self._language_cache[lang] = get_language(lang)
+                self.logger.info(f"Successfully loaded tree-sitter language: {lang}")
             except Exception as e:
                 self.logger.error(f"Failed to load language {lang}: {e}")
                 return None
@@ -80,11 +81,23 @@ class TreeSitterStructuralAnalyzer:
         
         # Cache parsers
         if language not in self._parser_cache:
-            parser = Parser()
-            parser.set_language(ts_lang)
+            # Support both old and new tree-sitter API
+            # Old API (tree-sitter < 0.23.0): Parser() then set_language(...)
+            # New API (tree-sitter >= 0.23.0): Parser(language=...)
+            try:
+                # Try old API first (for tree-sitter 0.20.4)
+                parser = Parser()
+                parser.set_language(ts_lang)
+                self.logger.debug(f"Using old Parser API for {language}")
+            except AttributeError:
+                # Fall back to new API (tree-sitter >= 0.23.0)
+                parser = Parser(language=ts_lang)
+                self.logger.debug(f"Using new Parser API for {language}")
+            
             self._parser_cache[language] = parser
         
         return self._parser_cache[language]
+
     
     def _clean_code(self, code: str) -> str:
         """

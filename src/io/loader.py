@@ -72,7 +72,11 @@ class SubmissionLoader:
         """
         Load submissions from CSV file.
         
-        Expected columns: submission_id, code, language (optional)
+        Flexible column mapping:
+        - 'id' or 'submission_id' for submission identifier
+        - 'code' for code content
+        - 'language' for programming language (optional)
+        - Other columns (userId, problemTitle, etc.) are preserved
         
         Args:
             filepath: Path to CSV file
@@ -85,16 +89,24 @@ class SubmissionLoader:
         except Exception as e:
             raise ValueError(f"Error reading CSV file: {e}")
         
-        # Check for required columns
-        if 'submission_id' not in df.columns:
-            raise ValueError("CSV must contain 'submission_id' column")
+        # Check for identifier column (accept 'id' or 'submission_id')
+        if 'submission_id' not in df.columns and 'id' not in df.columns:
+            raise ValueError("CSV must contain 'submission_id' or 'id' column")
+        
+        # Check for code column
         if 'code' not in df.columns:
-            raise ValueError("CSV must contain 'code' column")
+            raise ValueError(f"CSV must contain 'code' column. Found columns: {list(df.columns)}")
+        
+        # Rename 'id' to 'submission_id' if needed
+        if 'id' in df.columns and 'submission_id' not in df.columns:
+            df['submission_id'] = df['id']
+            self.logger.info("Mapped 'id' column to 'submission_id'")
         
         # Convert to list of dictionaries
         submissions = df.to_dict('records')
         
         return submissions
+
     
     def _load_json(self, filepath: Path) -> List[Dict[str, Any]]:
         """

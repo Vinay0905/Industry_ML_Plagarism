@@ -8,50 +8,50 @@ from src.fusion import PlagiarismScorer
 import pandas as pd
 
 # Create sample data
-print("Creating sample submissions...")
-sample_data = {
-    'submission_id': ['s001', 's002', 's003', 's004'],
-    'code': [
-        # s001 - Fibonacci recursive
-        """
-def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n-1) + fibonacci(n-2)
-""",
-        # s002 - Same as s001 but renamed
-        """
-def fib(x):
-    if x <= 1:
-        return x
-    return fib(x-1) + fib(x-2)
-""",
-        # s003 - Factorial (different algorithm)
-        """
-def factorial(n):
-    if n <= 1:
-        return 1
-    return n * factorial(n-1)
-""",
-        # s004 - Fibonacci iterative (different approach)
-        """
-def fibonacci(n):
-    a, b = 0, 1
-    for _ in range(n):
-        a, b = b, a + b
-    return a
-"""
-    ],
-    'language': ['python', 'python', 'python', 'python']
-}
+# print("Creating sample submissions...")
+# sample_data = {
+#     'submission_id': ['s001', 's002', 's003', 's004'],
+#     'code': [
+#         # s001 - Fibonacci recursive
+#         """
+# def fibonacci(n):
+#     if n <= 1:
+#         return n
+#     return fibonacci(n-1) + fibonacci(n-2)
+# """,
+#         # s002 - Same as s001 but renamed
+#         """
+# def fib(x):
+#     if x <= 1:
+#         return x
+#     return fib(x-1) + fib(x-2)
+# """,
+#         # s003 - Factorial (different algorithm)
+#         """
+# def factorial(n):
+#     if n <= 1:
+#         return 1
+#     return n * factorial(n-1)
+# """,
+#         # s004 - Fibonacci iterative (different approach)
+#         """
+# def fibonacci(n):
+#     a, b = 0, 1
+#     for _ in range(n):
+#         a, b = b, a + b
+#     return a
+# """
+#     ],
+#     'language': ['python', 'python', 'python', 'python']
+# }
 
-# Save to CSV
-df = pd.DataFrame(sample_data)
-df.to_csv('test_submissions.csv', index=False)
-print(f"✓ Created test_submissions.csv with {len(df)} submissions\n")
+# # Save to CSV
+# df = pd.DataFrame(sample_data)
+# df.to_csv('test_submissions.csv', index=False)
+# print(f"✓ Created test_submissions.csv with {len(df)} submissions\n")
 
 # Load submissions
-submissions = load_submissions('test_submissions.csv')
+submissions = load_submissions('D:/vinay_programing/PR4/Industry_ML_Plagarism/Data/RAW/trapping_rain_water.csv')
 print(f"Loaded {len(submissions)} submissions\n")
 
 # Initialize scorer

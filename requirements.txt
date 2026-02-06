@@ -11,7 +11,12 @@ torch>=2.0.0
 tokenizers>=0.13.0
 
 # AST parsing and code analysis
-tree-sitter>=0.20.0
+# tree-sitter
+# tree-sitter-language-pack
+# tree-sitter==0.21.3
+tree-sitter==0.20.4
+tree-sitter-languages==1.10.2
+
 astor>=0.8.0
 
 # C++ parsing (optional, for cpp_normalizer)
@@ -36,6 +41,7 @@ networkx>=3.1
 # Utilities
 tqdm>=4.65.0
 colorama>=0.4.6
+streamlit>=1.30.0
 
 # Development and testing
 pytest>=7.4.0
