@@ -76,22 +76,67 @@ pip install -r requirements.txt
 
 ```python
 from src.io.loader import load_submissions
-from src.similarity.structural import StructuralSimilarity, StructuralMethod
 from src.fusion.scorer import PlagiarismScorer
 
 # Load submissions
 submissions = load_submissions('data/raw/submissions.csv')
 
-# Analyze similarity
+# Analyze similarity (uses token-based normalization by default)
 scorer = PlagiarismScorer()
 results = scorer.analyze_all(submissions)
 
 # View report
 for result in results:
-    print(f"Submission {result['id']}: {result['score']:.1f}% similarity")
+    print(f"Submission {result['submission_id']}: {result['similarity_score']:.1f}% similarity")
     print(f"  Severity: {result['severity']}")
-    print(f"  Explanation: {result['explanation']}")
 ```
+
+## 🔧 Code Normalization
+
+The system supports **multiple normalization approaches**:
+
+### Token-Based Normalization (Default ⭐ Recommended)
+
+**Universal, fast, language-agnostic approach**
+
+```python
+from src.normalization import get_normalizer
+
+# Token-based normalizer (default - works for Python, C++, Java, etc.)
+normalizer = get_normalizer('python')  # method='token' is default
+normalized_code = normalizer.normalize(code)
+```
+
+**Features:**
+
+- ✅ Works across multiple languages (Python, C++, Java)
+- ✅ Fast regex-based tokenization
+- ✅ Removes comments
+- ✅ Normalizes identifiers to VAR0, VAR1, ...
+- ✅ Normalizes types to TYPE, numbers to NUM
+- ✅ Preserves keywords and operators
+
+### Language-Specific Normalization
+
+**AST-based (Python) or Regex-based (C++/Java)**
+
+```python
+# Python: AST-based normalization
+normalizer = get_normalizer('python', method='ast')
+
+# C++/Java: Regex-based normalization
+normalizer = get_normalizer('cpp', method='regex')
+```
+
+**Performance Comparison:**
+
+| Method              | Speed     | Languages         | Best For             |
+| ------------------- | --------- | ----------------- | -------------------- |
+| **Token** (default) | ⚡ Fast   | Universal         | Production use       |
+| AST                 | 🐌 Slower | Python only       | Deep Python analysis |
+| Regex               | ⚡ Fast   | Language-specific | C++/Java specific    |
+
+**Recommendation:** Use token-based (default) for production - it's faster and works universally.
 
 ### Notebooks
 
